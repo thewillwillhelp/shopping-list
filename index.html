@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Shopping List</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    .btn {
+      border: 1px solid #666;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 30px;
+      background-color: #222;
+    }
+    
+    .btn:hover,
+    .btn:active {
+      background-color: #ccc;
+      color: #222;
+    }
+    
+    body,
+    #app {
+      background-color: #222;
+      color: #ccc;
+      padding: 5px;
+      position: relative;
+    }
+    
+    #app .list {
+       position: relative;
+      top: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .list-item {
+      background-color: #222;
+      display: flex;
+      width: 100%;
+      border: 1px solid #666;
+      padding: 3px;
+      font-size: 18px;
+    }
+    
+    .list-item .item-label {
+      width: 100%;
+    }
+    
+    .list-item .item-label.strike {
+      text-decoration: line-through;
+    }
+    
+    .list-item .item-label,
+    .list-item .btn.strike,
+    .list-item .btn.remove {
+      padding: 3px 5px;
+    }
+    
+    .list-item .btn.strike,
+    .list-item .btn.remove {      
+      width: clamp(50px, calc(100% / 5), 200px);
+    } 
+    
+    .list-item .btn.strike {
+      margin-right: 20px;
+    }
+    
+    .form {
+      display: flex;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+    }
+    
+    .form .new-item-title {
+      width: clamp(300px, 70%, 1000px);
+      font-size: 16px;
+    }
+    
+    .form .btn.add-item {
+      width: clamp(25px, 30%, 300px);
+    }
+  </style>
+  
+  <script>
+    
+    function getListItemHtml(id, item) {
+      const liInnerHtml = `<div class="list-item" data-id="${id}">
+        <div class="item-label ${item.done ? 'strike' : ''}">${item.label}</div>
+        <div class="btn strike">X</div>
+        <div class="btn remove">D</div>
+      </div>`;
+      
+      return liInnerHtml;
+    }
+    
+    function redraw(list) {
+      const listEl = document.querySelector('#app .list');
+      
+      listEl.innerHTML = list.map((item, index) => getListItemHtml(index, item)).join('');
+       
+    }
+    
+    let list = [];
+    
+    function saveList(list) {
+      localStorage.setItem('shopping-list', JSON.stringify(list));
+    }
+    
+    function main() {
+      try {
+        list = JSON.parse(localStorage.getItem('shopping-list')) || [];
+      } catch(error) {
+        console.log(error);
+      }
+      
+      redraw(list);
+    }
+    
+    function onClickListener(event) {
+      if (event.target.closest('#app .add-item')) {
+        const newItemTitleInput = document.querySelector('#app .form > .new-item-title');
+        
+        list.push({ label: newItemTitleInput.value });
+        
+        saveList(list);
+        
+        newItemTitleInput.value = '';
+        
+        redraw(list);
+      }
+      
+      if (event.target.closest('#app .strike')) {
+        const itemRoot = event.target.closest('#app .list-item');
+        
+        list[itemRoot.dataset.id].done = !list[itemRoot.dataset.id].done;
+        
+        saveList(list);
+        
+        redraw(list);
+      }
+      
+      if (event.target.closest('#app .remove')) {
+        const itemRoot = event.target.closest('#app .list-item');
+        
+        list.splice(parseInt(itemRoot.dataset.id), 1);
+        
+        saveList(list);
+        
+        redraw(list);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => { main(); });
+    
+    document.addEventListener('click', onClickListener);
+    
+  </script>
+</head>
+<body>
+  <div id="app">
+    <div class="list">
+      <div class="list-item">
+        <div class="item-label">Carrot</div>
+        <div class="btn strike">X</div>
+        <div class="btn remove">D</div>
+      </div>
+    </div>
+    <div class="form">
+      <input type="text" class="new-item-title" placeholder="Title of a new item" />
+      <div class="btn add-item">+</div>
+    </div>
+  </div>
+
+</body>
+</html>
