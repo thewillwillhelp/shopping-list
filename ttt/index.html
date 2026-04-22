@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Tic-Tac-Toe</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Tic-Tac-Toe</h1>
+      <p id="status"></p>
+    </header>
+
+    <div id="board">
+      <button class="cell" data-index="0"></button>
+      <button class="cell" data-index="1"></button>
+      <button class="cell" data-index="2"></button>
+      <button class="cell" data-index="3"></button>
+      <button class="cell" data-index="4"></button>
+      <button class="cell" data-index="5"></button>
+      <button class="cell" data-index="6"></button>
+      <button class="cell" data-index="7"></button>
+      <button class="cell" data-index="8"></button>
+    </div>
+
+    <div id="controls">
+      <button id="restart-btn">Restart</button>
+      <div id="score">
+        <span id="score-x">X: 0</span>
+        <span id="score-draw">Draw: 0</span>
+        <span id="score-o">O: 0</span>
+      </div>
+    </div>
+
+    <div id="mode-selector">
+      <span>Mode:</span>
+      <button class="mode-btn active" data-mode="pvp">2 Players</button>
+      <button class="mode-btn" data-mode="pvc">vs Bot</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
